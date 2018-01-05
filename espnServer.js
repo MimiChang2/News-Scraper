@@ -1,11 +1,9 @@
-// Using this template, the cheerio documentation,
-// and what you've learned in class so far, scrape a website
-// of your choice, save information from the page in a result array, and log it to the console.
+//Mongoose.Promise allows us to use the .then function
 
 var cheerio = require("cheerio");
 var request = require("request");
 
-// Make a request call to grab the HTML body from the site of your choice
+// Request to grab HTML body from site 
 request("http://www.espn.com", function(error, response, html) {
 
     // Load the HTML into cheerio and save it to a variable
@@ -15,9 +13,7 @@ request("http://www.espn.com", function(error, response, html) {
     // An empty array to save the data that we'll scrape
     var results = [];
 
-    // Select each element in the HTML body from which you want information.
-    // NOTE: Cheerio selectors function similarly to jQuery's selectors,
-    // but be sure to visit the package's npm page to see how it works
+    // Select each element in the HTML body. Cheerio selectors function similarly to jQuery
     $("h1.contentItem__title.contentItem__title--story").each(function(i, element) {
         //console.log(element);
 
