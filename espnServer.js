@@ -1,35 +1,105 @@
-//Mongoose.Promise allows us to use the .then function
-
+//Scraping Tools
 var cheerio = require("cheerio");
-var request = require("request");
+//var request = require("request");
+var axios = require("axios");
+
+var mongoose = require("mongoose");
+var express = require("express");
+var bodyParser = require("body-parser");
+var logger = require("morgan");
+
+//Require Models
+var db = require("./models");
+
+var PORT = process.env.PORT || 8080;
+
+var app = express();
+
+app.use(logger("dev"));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static("public"));
+
+//Mongoose.Promise allows us to use the .then function
+mongoose.Promise = Promise;
+mongoose.connect("mongodb://localhost/Article", {
+    //useMongoClient: true
+});
 
 // Request to grab HTML body from site 
-request("http://www.espn.com", function(error, response, html) {
 
-    // Load the HTML into cheerio and save it to a variable
-    // '$' becomes a shorthand for cheerio's selector commands, much like jQuery's '$'
-    var $ = cheerio.load(html);
+app.get("/scrape", function(req, res) {
 
-    // An empty array to save the data that we'll scrape
-    var results = [];
+    axios.get("http://www.espn.com/").then(function(response) {
+        console.log(response);
+        // console.log("logging err")
+        // console.log(err);
+        var $ = cheerio.load(response.data);
 
-    // Select each element in the HTML body. Cheerio selectors function similarly to jQuery
-    $("h1.contentItem__title.contentItem__title--story").each(function(i, element) {
-        //console.log(element);
+        $("h1.contentItem__title.contentItem__title--story").each(function(i, element) {
 
-        var link = $(element).parent().parent().attr("href");
-        var title = $(element).text();
-        var summary = $(element).parent().find('p').text();
+            var result = {};
 
-        // console.log(title);
-        // Save these results in an object that we'll push into the results array we defined earlier
-        results.push({
-            title: title,
-            summary: summary,
-            link: "http://www.espn.com" + link
+            result.link = "http://www.espn.com" + $(this).parent().parent().attr("href");
+            result.title = $(this).text();
+            result.summary = $(this).parent().find('p').text();
+
+            //Linking Scrape to Database
+
+            db.Article
+                .create(result)
+                .then(function(dbArticle) {
+                    console.log(dbArticle);
+                })
+                .catch(function(err) {
+                    res.json(err);
+                });
         });
     });
+});
 
-    // Log the results once you've looped through each of the elements found with cheerio
-    console.log(results);
+//res.send("Scraped!");
+
+//Getting Articles from database
+app.get("/article", function(req, res) {
+    db.Article
+        .find({})
+        .then(function(dbArticle) {
+            res.json(dbArticle);
+        })
+        .catch(function(err) {
+            res.json(err);
+        });
+});
+
+//Get a specific Article by ID and populate w comment
+app.get("/article/:id", function(req, res) {
+    db.Article
+        .findOne({ _id: req.params.id })
+        .populate("comments")
+        .then(function(dbArticle) {
+            res.json(dbArticle);
+        })
+        .catch(function(err) {
+            res.json(err);
+        });
+});
+
+//Saving and updating associated comment
+app.post("/article/:id", function(req, res) {
+    db.Comment
+        .create(req.body)
+        .then(function(dbComment) {
+            return db.Article.findOneAndUpdate({ _id: req.params.id }, { comment: dbComment._id }, { new: true });
+        })
+        .then(function(dbArticle) {
+            res.json(dbArticle);
+        })
+        .catch(function(err) {
+            res.json(err);
+        });
+});
+
+//Start Server
+app.listen(PORT, function() {
+    console.log("App Listening on PORT" + PORT);
 });
