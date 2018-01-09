@@ -102,6 +102,21 @@ app.post("/article/:id", function(req, res) {
         });
 });
 
+//Deleting a Comment
+// app.destroy("/article/:id", function(req, res) {
+            //     db.Comment
+            //         .delete(req.body)
+            //         .then(function(dbComment) {
+            //             return db.Article.findOneAndRemove({ _id: req.params.id }, { comments: dbComment._id });
+            //         })
+            //         .then(function(dbArticle) {
+            //             res.json(dbArticle);
+            //         })
+            //         .catch(function(err) {
+            //             res.json(err);
+            //         });
+            // });
+
 //Start Server
 app.listen(PORT, function() {
     console.log("App Listening on PORT" + PORT);
