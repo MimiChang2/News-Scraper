@@ -13,6 +13,7 @@ var db = require("./models");
 
 var PORT = process.env.PORT || 8080;
 
+var MONGODBURI = process.env.MONGODB_URI || "mongodb://heroku_5ffflz78:tltu50cuv2mpqe8osrbdla1lh6@ds135547.mlab.com:35547/heroku_5ffflz78";
 var app = express();
 
 app.use(logger("dev"));
