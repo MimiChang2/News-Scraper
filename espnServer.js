@@ -87,6 +87,8 @@ app.get("/article/:id", function(req, res) {
 
 //Saving and updating associated comment
 app.post("/article/:id", function(req, res) {
+    console.log("hit post route");
+
     db.Comment
         .create(req.body)
         .then(function(dbComment) {

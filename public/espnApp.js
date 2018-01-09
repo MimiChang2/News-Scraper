@@ -17,25 +17,26 @@ $(document).on("click", "h1", function() {
             console.log(data);
             $("#comment").append("<h1>" + data.title + "</h1>");
             $("#comment").append("<textarea id='body' name='newcomment'></textarea>");
-            $("#comment").append("<button data-id'" + data._id + "'id='newnote'>Submit Comment</button>");
+            $("#comment").append("<button data-id ='" + data._id + "'id='newnote'>Submit Comment</button>");
 
             if (data.comment) {
-                $("#newtitle").val(data.comment.title);
-                $("#newbody").val(data.comment.body);
+                //$("#body").val(data.comment.title);
+                $("#body").val(data.comment.body);
             }
         });
 });
 
 //new post
-$(document).on("click", "#postcomment", function() {
+$(document).on("click", "#newnote", function() {
     var thisID = $(this).attr("data-id");
+    console.log("clicked button");
 
     $.ajax({
             method: "POST",
             url: "/article/" + thisID,
             data: {
-                title: $("#newtitle").val(),
-                body: $("#newbody").val()
+                //title: $("#newtitle").val(),
+                body: $("#body").val()
             }
         })
         .done(function(data) {
