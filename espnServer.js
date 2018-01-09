@@ -22,7 +22,7 @@ app.use(express.static("public"));
 
 //Mongoose.Promise allows us to use the .then function
 mongoose.Promise = Promise;
-mongoose.connect("mongodb://localhost/Article", {
+mongoose.connect("mongodb://localhost/Article" || MONGODBURI, {
     //useMongoClient: true
 });
 
