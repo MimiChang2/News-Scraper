@@ -32,7 +32,7 @@ $(document).on("click", "#postcomment", function() {
 
     $.ajax({
             method: "POST",
-            url: "/article/" + thisId,
+            url: "/article/" + thisID,
             data: {
                 title: $("#newtitle").val(),
                 body: $("#newbody").val()
