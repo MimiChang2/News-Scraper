@@ -44,6 +44,6 @@ $(document).on("click", "#newnote", function() {
             $("#comment").empty();
         });
 
-    $("#newtitle").val("");
-    $("#newbody").val("");
+    //$("#newtitle").val("");
+    $("#body").val("");
 });
