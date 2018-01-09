@@ -54,10 +54,11 @@ app.get("/scrape", function(req, res) {
                     res.json(err);
                 });
         });
+        res.send("Scraped!");
     });
 });
 
-//res.send("Scraped!");
+//
 
 //Getting Articles from database
 app.get("/article", function(req, res) {
